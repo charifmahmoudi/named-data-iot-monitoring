@@ -6,6 +6,9 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
+var ndn = require('ndn');
+
+var hostip = "spurs.cs.ucla.edu";
 
 var main = new UI.Card({
   title: 'Pebble.js',
@@ -46,7 +49,7 @@ main.on('click', 'select', function(e) {
     position: new Vector2(0, 65),
     size: new Vector2(144, 30),
     font: 'gothic-24-bold',
-    text: 'Text Anywhere!',
+    text: 'NDN Monitoring Client',
     textAlign: 'center'
   });
   wind.add(textfield);
@@ -55,8 +58,34 @@ main.on('click', 'select', function(e) {
 
 main.on('click', 'down', function(e) {
   var card = new UI.Card();
-  card.title('A Card');
-  card.subtitle('Is a Window');
-  card.body('The simplest window type in Pebble.js.');
+  card.title('Connecting to UCLA');
+  card.subtitle('NDN');
+  card.body('Creating face and processing');
   card.show();
+  
 });
+
+var face = null;
+
+function onData(interest, data)
+{
+  console.log("Got data packet with name " + data.getName().toUri());
+  console.log(data.getContent().buf().toString('binary'));
+};
+
+function onTimeout(interest)
+{
+  console.log("Time out for interest " + interest.getName().toUri());
+};
+
+function express() {
+  if (face == null) {
+    // Connect to the forwarder with a WebSocket.
+    face = new Face({host: hostip});
+  }
+
+  var name = new Name("/ndn/edu/arizona");
+  name.append(+ Math.floor(Math.random()*100000));
+  console.log("Express name " + name.toUri());
+  face.expressInterest(name, onData, onTimeout);
+}
