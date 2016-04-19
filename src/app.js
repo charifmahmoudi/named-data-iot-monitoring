@@ -6,8 +6,17 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
-var ndn = require('ndn');
-
+var ndn = require('./js/ndn');
+var ProtoBuf = require("./js/protobuf");
+/*
+var Face = require('./js/ndn').Face;
+var Name = require('./js/ndn').Name;
+var Interest = require('./js/ndn').Interest;
+var Blob = require('./js/ndn').Blob;
+//var UnixTransport = require('./js/ndn').UnixTransport;
+var ProtobufTlv = require('./js/ndn').ProtobufTlv;
+var SegmentFetcher = require('./js/ndn').SegmentFetcher;
+*/
 var hostip = "spurs.cs.ucla.edu";
 
 var main = new UI.Card({
@@ -62,7 +71,7 @@ main.on('click', 'down', function(e) {
   card.subtitle('NDN');
   card.body('Creating face and processing');
   card.show();
-  
+  express();
 });
 
 var face = null;
@@ -79,12 +88,12 @@ function onTimeout(interest)
 };
 
 function express() {
-  if (face == null) {
+  if (face === null) {
     // Connect to the forwarder with a WebSocket.
-    face = new Face({host: hostip});
+    face = new ndn.Face({host: hostip});
   }
 
-  var name = new Name("/ndn/edu/arizona");
+  var name = new ndn.Name("/ndn/edu/arizona");
   name.append(+ Math.floor(Math.random()*100000));
   console.log("Express name " + name.toUri());
   face.expressInterest(name, onData, onTimeout);
