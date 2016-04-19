@@ -8,8 +8,8 @@ var UI = require('ui');
 var Vector2 = require('vector2');
 //var ndn = require('./js/ndn');
 //var ProtoBuf = require("./js/protobuf");
-var Face = require('ndn').Face;
-var Name = require('ndn').Name;
+var Face = require('js/ndn').Face;
+var Name = require('js/ndn').Name;
 /*
 var Interest = require('./js/ndn').Interest;
 var Blob = require('./js/ndn').Blob;
